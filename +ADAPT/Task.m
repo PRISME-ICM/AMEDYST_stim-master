@@ -266,6 +266,7 @@ try
 
                     % Record trial onset & step onset
                     if counter_step_pause_preMotor == 1
+                        %  KND: Changed for EEG 
                         RR.AddEvent({['PausePreMotor__' EP.Data{evt,1}] lastFlipOnset-StartTime [] EP.Data{evt,4} EP.Data{evt,5} EP.Data{evt,6} EP.Data{evt,7} EP.Data{evt,8} EP.Data{evt,9} EP.Data{evt,10} })
                         step5onset = lastFlipOnset;
                         Common.SendParPortMessage( 'PausePreMotor' )

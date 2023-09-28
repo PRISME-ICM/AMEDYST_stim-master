@@ -198,6 +198,9 @@ else
     fdBack = 'noFB';
 end
 
+
+% Prepare 
+
 tk = strrep(Task,'ADAPT_','')
 DataFile     = sprintf('%s%s_%s_%s_%s_%s_%s_run%0.2d', DataPath, S.TimeStampFile, SubjectID, Environement(1), tk,fdBack, sgn, RunNumber );
 DataFileName = sprintf(  '%s_%s_%s_%s_%s_%s_run%0.2d',           S.TimeStampFile, SubjectID, Environement(1), tk,fdBack, sgn, RunNumber  );
@@ -233,13 +236,18 @@ end
 switch get( handles.checkbox_ParPort , 'Value' )
     
     case 1
-        ParPort = 'On';
+        if get( handles.radiobutton_EyelinkOff,'Value')
+            ParPort = 'Arduino';
+            disp('Event will send triggers via Arduino on COM Port')
+        else
+            ParPort = 'Parallel';
+        end
     case 0
         ParPort = 'Off';
 end
 S.ParPort = ParPort;
 S.ParPortMessages = Common.PrepareParPort;
-handles.ParPort    = ParPort;
+handles.ParPort   = ParPort;
 
 
 %% GUI : ADAPT : Show reward ?
@@ -345,7 +353,6 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
 end
 
 S.EyelinkMode = EyelinkMode;
-
 
 %% MAIN : Security : NEVER overwrite a file
 % If erasing a file is needed, we need to do it manually

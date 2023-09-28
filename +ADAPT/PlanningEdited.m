@@ -34,7 +34,6 @@ Parameters.PausePostMotor              = 0.2; % seconds
 % Show real reward
 Parameters.ShowRewardDuration          = 0; % seconds, Pas besoin
 
-
 Parameters.TargetAngles                = [20 60 120 160]       ;
 %Parameters.Values                      = [0  1  2  3  ]/3 * 100;
 
@@ -52,11 +51,13 @@ switch S.Task
         Parameters.HitTarget = 4;
         Parameters.Puni      = '+';   
         S.Parameters.TextColor =  [0   255 0  ]  %Green
+
     case 'ADAPT_Punishment'
         Parameters.Points    = [-1 -2 -3 -4];
         Parameters.HitTarget = 0;
         Parameters.Puni      = '';
         S.Parameters.TextColor = [255 0   0  ];  % Red
+        
     otherwise
         error('task ?')
 end

@@ -5,8 +5,12 @@ function varargout = AMEDYST_GUI
 
 % debug=1 closes previous figure and reopens it, and send the gui handles
 % to base workspace.
-debug = 1;
+debug = 0;
 
+% KND: Force debug mode for me...
+if contains(which('AMEDYST_GUI'),'karim.ndiaye')
+    debug = 1;
+end
 
 %% Open a singleton figure, or gring the actual into focus.
 
@@ -14,23 +18,22 @@ debug = 1;
 figPtr = findall(0,'Tag',mfilename);
 
 if ~isempty(figPtr) % Figure exists so brings it to the focus
-    
+
     figure(figPtr);
-    
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if debug
         close(figPtr); %#ok<UNRCH>
         AMEDYST_GUI;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    
+
 else % Create the figure
-    
+
     clc
     rng('default')
     rng('shuffle')
-    
+
     % Create a figure
     figHandle = figure( ...
         'HandleVisibility', 'off',... % close all does not close the figure
@@ -41,54 +44,51 @@ else % Create the figure
         'Units'           , 'Pixels'                 , ...
         'Position'        , [20, 20, 700, 700] , ...
         'Tag'             , mfilename                );
-    
+
     figureBGcolor = [0.9 0.9 0.9]; set(figHandle,'Color',figureBGcolor);
     buttonBGcolor = figureBGcolor - 0.1;
     editBGcolor   = [1.0 1.0 1.0];
-    
+
     % Create GUI handles : pointers to access the graphic objects
     handles = guihandles(figHandle);
-    
-    
+
     %% Default values for Low reward & High reward
-    
+
     handles.defaultLowRreward  = 12;
     handles.defaultHighRreward = 0;
-    
-    
+
     %% Panel proportions
-    
+
     panelProp.xposP = 0.05; % xposition of panel normalized : from 0 to 1
     panelProp.wP    = 1 - panelProp.xposP * 2;
-    
+
     panelProp.vect  = ...
         [1 4 2 1 1 2 ]; % relative proportions of each panel, from bottom to top
-    
+
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
     panelProp.adjustedTotal = panelProp.vectTotal + 1;
     panelProp.unitWidth     = 1/panelProp.adjustedTotal;
     panelProp.interWidth    = panelProp.unitWidth/panelProp.vectLength;
-    
+
     panelProp.countP = panelProp.vectLength + 1;
     panelProp.yposP  = @(countP) panelProp.unitWidth*sum(panelProp.vect(1:countP-1)) + 0.8*countP*panelProp.interWidth;
-    
-    
+
     %% Panel : Subject & Run
-    
+
     p_sr.x = panelProp.xposP;
     p_sr.w = panelProp.wP;
-    
+
     panelProp.countP = panelProp.countP - 1;
     p_sr.y = panelProp.yposP(panelProp.countP);
     p_sr.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
-    
+
     handles.uipanel_SubjectRun = uipanel(handles.(mfilename),...
         'Title','Subject & Run',...
         'Units', 'Normalized',...
         'Position',[p_sr.x p_sr.y p_sr.w p_sr.h],...
         'BackgroundColor',figureBGcolor);
-    
+
     p_sr.nbO       = 3; % Number of objects
     p_sr.Ow        = 1/(p_sr.nbO + 1); % Object width
     p_sr.countO    = 0; % Object counter
@@ -97,11 +97,10 @@ else % Create the figure
     p_sr.hOmain    = 0.6;
     p_sr.yposOhdr  = 0.7;
     p_sr.hOhdr     = 0.2;
-    
-    
+
     % ---------------------------------------------------------------------
     % Edit : Subject ID
-    
+
     p_sr.countO = p_sr.countO + 1;
     e_sid.x = p_sr.xposO(p_sr.countO);
     e_sid.y = p_sr.yposOmain ;
@@ -114,11 +113,10 @@ else % Create the figure
         'BackgroundColor',editBGcolor,...
         'String','',...
         'Callback',@edit_SubjectID_Callback);
-    
-    
+
     % ---------------------------------------------------------------------
     % Text : Subject ID
-    
+
     t_sid.x = p_sr.xposO(p_sr.countO);
     t_sid.y = p_sr.yposOhdr ;
     t_sid.w = p_sr.Ow;
@@ -129,11 +127,10 @@ else % Create the figure
         'Position',[t_sid.x t_sid.y t_sid.w t_sid.h],...
         'String','Subject ID',...
         'BackgroundColor',figureBGcolor);
-    
-    
+
     % ---------------------------------------------------------------------
     % Pushbutton : Check SubjectID data
-    
+
     p_sr.countO = p_sr.countO + 1;
     b_csidd.x = p_sr.xposO(p_sr.countO);
     b_csidd.y = p_sr.yposOmain;
@@ -147,11 +144,10 @@ else % Create the figure
         'BackgroundColor',buttonBGcolor,...
         'TooltipString','Display in Command Window the content of data/(SubjectID)',...
         'Callback',@(hObject,eventdata)GUI.Pushbutton_Check_SubjectID_data_Callback(handles.edit_SubjectID,eventdata));
-    
-    
+
     % ---------------------------------------------------------------------
     % Text : Last file name annoucer
-    
+
     p_sr.countO = p_sr.countO + 1;
     t_lfna.x = p_sr.xposO(p_sr.countO);
     t_lfna.y = p_sr.yposOhdr ;
@@ -164,11 +160,10 @@ else % Create the figure
         'String','Last file name',...
         'BackgroundColor',figureBGcolor,...
         'Visible','Off');
-    
-    
+
     % ---------------------------------------------------------------------
     % Text : Last file name
-    
+
     t_lfn.x = p_sr.xposO(p_sr.countO);
     t_lfn.y = p_sr.yposOmain ;
     t_lfn.w = p_sr.Ow;
@@ -180,32 +175,30 @@ else % Create the figure
         'String','',...
         'BackgroundColor',figureBGcolor,...
         'Visible','Off');
-    
-    
+
     %% Panel : Save mode
-    
+
     p_sm.x = panelProp.xposP;
     p_sm.w = panelProp.wP;
-    
+
     panelProp.countP = panelProp.countP - 1;
     p_sm.y = panelProp.yposP(panelProp.countP);
     p_sm.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
-    
+
     handles.uipanel_SaveMode = uibuttongroup(handles.(mfilename),...
         'Title','Save mode',...
         'Units', 'Normalized',...
         'Position',[p_sm.x p_sm.y p_sm.w p_sm.h],...
         'BackgroundColor',figureBGcolor);
-    
+
     p_sm.nbO    = 2; % Number of objects
     p_sm.Ow     = 1/(p_sm.nbO + 1); % Object width
     p_sm.countO = 0; % Object counter
     p_sm.xposO  = @(countO) p_sm.Ow/(p_sm.nbO+1)*countO + (countO-1)*p_sm.Ow;
-    
-    
+
     % ---------------------------------------------------------------------
     % RadioButton : Save Data
-    
+
     p_sm.countO = p_sm.countO + 1;
     r_sd.x   = p_sm.xposO(p_sm.countO);
     r_sd.y   = 0.1 ;
@@ -221,11 +214,10 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_sd.tag,...
         'BackgroundColor',figureBGcolor);
-    
-    
+
     % ---------------------------------------------------------------------
     % RadioButton : No save
-    
+
     p_sm.countO = p_sm.countO + 1;
     r_ns.x   = p_sm.xposO(p_sm.countO);
     r_ns.y   = 0.1 ;
@@ -241,32 +233,30 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_ns.tag,...
         'BackgroundColor',figureBGcolor);
-    
-    
+
     %% Panel : Environement
-    
+
     p_env.x = panelProp.xposP;
     p_env.w = panelProp.wP;
-    
+
     panelProp.countP = panelProp.countP - 1;
     p_env.y = panelProp.yposP(panelProp.countP);
     p_env.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
-    
+
     handles.uipanel_Environement = uibuttongroup(handles.(mfilename),...
         'Title','Environement : key mapping',...
         'Units', 'Normalized',...
         'Position',[p_env.x p_env.y p_env.w p_env.h],...
         'BackgroundColor',figureBGcolor);
-    
+
     p_env.nbO    = 2; % Number of objects
     p_env.Ow     = 1/(p_env.nbO + 1); % Object width
     p_env.countO = 0; % Object counter
     p_env.xposO  = @(countO) p_env.Ow/(p_env.nbO+1)*countO + (countO-1)*p_env.Ow;
-    
-    
+
     % ---------------------------------------------------------------------
     % RadioButton : MRI
-    
+
     p_env.countO = p_env.countO + 1;
     r_mri.x   = p_env.xposO(p_env.countO);
     r_mri.y   = 0.1 ;
@@ -282,11 +272,10 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',(r_mri.tag),...
         'BackgroundColor',figureBGcolor);
-    
-    
+
     % ---------------------------------------------------------------------
     % RadioButton : Practice
-    
+
     p_env.countO = p_env.countO + 1;
     r_practice.x   = p_env.xposO(p_env.countO);
     r_practice.y   = 0.1 ;
@@ -302,36 +291,35 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',(r_practice.tag),...
         'BackgroundColor',figureBGcolor);
-    
-    
+
+
     %% Panel : Eyelink mode
-    
+
     el_shift = 0.30;
-    
+
     p_el.x = panelProp.xposP + el_shift;
     p_el.w = panelProp.wP - el_shift ;
-    
+
     panelProp.countP = panelProp.countP - 1;
     p_el.y = panelProp.yposP(panelProp.countP);
     p_el.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
-    
+
     handles.uipanel_EyelinkMode = uibuttongroup(handles.(mfilename),...
         'Title','Eyelink mode',...
         'Units', 'Normalized',...
         'Position',[p_el.x p_el.y p_el.w p_el.h],...
         'BackgroundColor',figureBGcolor,...
         'SelectionChangeFcn',@uipanel_EyelinkMode_SelectionChangeFcn);
-    
-    
+
     % ---------------------------------------------------------------------
     % Checkbox : Windowed screen
-    
+
     c_ws.x = panelProp.xposP;
     c_ws.w = el_shift - panelProp.xposP;
-    
+
     c_ws.y = panelProp.yposP(panelProp.countP)-0.01 ;
     c_ws.h = p_el.h * 0.3;
-    
+
     handles.checkbox_WindowedScreen = uicontrol(handles.(mfilename),...
         'Style','checkbox',...
         'Units', 'Normalized',...
@@ -346,13 +334,13 @@ else % Create the figure
 
     % ---------------------------------------------------------------------
     % Listbox : Screens
-    
+
     l_sc.x = panelProp.xposP;
     l_sc.w = el_shift - panelProp.xposP;
-    
+
     l_sc.y = c_ws.y + c_ws.h ;
     l_sc.h = p_el.h * 0.6;
-    
+
     handles.listbox_Screens = uicontrol(handles.(mfilename),...
         'Style','listbox',...
         'Units', 'Normalized',...
@@ -361,17 +349,17 @@ else % Create the figure
         'TooltipString','Select the display mode   PTB : 0 for extended display (over all screens) , 1 for screen 1 , 2 for screen 2 , etc.',...
         'HorizontalAlignment','Center',...
         'CreateFcn',@GUI.Listbox_Screens_CreateFcn);
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Text : ScreenMode
-    
+
     t_sm.x = panelProp.xposP;
     t_sm.w = el_shift - panelProp.xposP;
-    
+
     t_sm.y = l_sc.y + l_sc.h ;
     t_sm.h = p_el.h * 0.15;
-    
+
     handles.text_ScreenMode = uicontrol(handles.(mfilename),...
         'Style','text',...
         'Units', 'Normalized',...
@@ -380,20 +368,20 @@ else % Create the figure
         'TooltipString','Output of Screen(''Screens'')   Use ''Screen Screens?'' in Command window for help',...
         'HorizontalAlignment','Center',...
         'BackgroundColor',figureBGcolor);
-    
-    
+
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+
     p_el_up.nbO    = 6; % Number of objects
     p_el_up.Ow     = 1/(p_el_up.nbO + 1); % Object width
     p_el_up.countO = 0; % Object counter
     p_el_up.xposO  = @(countO) p_el_up.Ow/(p_el_up.nbO+1)*countO + (countO-1)*p_el_up.Ow;
     p_el_up.y      = 0.6;
     p_el_up.h      = 0.3;
-    
+
     % ---------------------------------------------------------------------
     % RadioButton : Eyelink ON
-    
+
     p_el_up.countO = p_el_up.countO + 1;
     r_elon.x   = p_el_up.xposO(p_el_up.countO);
     r_elon.y   = p_el_up.y ;
@@ -409,11 +397,11 @@ else % Create the figure
         'Tag',r_elon.tag,...
         'BackgroundColor',figureBGcolor,...
         'Visible','On');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % RadioButton : Eyelink OFF
-    
+
     p_el_up.countO = p_el_up.countO + 1;
     r_eloff.x   = p_el_up.xposO(p_el_up.countO);
     r_eloff.y   = p_el_up.y ;
@@ -429,11 +417,11 @@ else % Create the figure
         'Tag',r_eloff.tag,...
         'BackgroundColor',figureBGcolor,...
         'Visible','On');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Checkbox : Parallel port
-    
+
     p_el_up.countO = p_el_up.countO + 1;
     c_pp.x = p_el_up.xposO(p_el_up.countO);
     c_pp.y = p_el_up.y ;
@@ -450,21 +438,21 @@ else % Create the figure
         'Value',1,...
         'Callback',@GUI.Checkbox_ParPort_Callback,...
         'CreateFcn',@GUI.Checkbox_ParPort_Callback);
-    
-    
+
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+
     p_el_dw.nbO    = 3; % Number of objects
     p_el_dw.Ow     = 1/(p_el_dw.nbO + 1); % Object width
     p_el_dw.countO = 0; % Object counter
     p_el_dw.xposO  = @(countO) p_el_dw.Ow/(p_el_dw.nbO+1)*countO + (countO-1)*p_el_dw.Ow;
     p_el_dw.y      = 0.1;
     p_el_dw.h      = 0.4 ;
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : Eyelink Initialize
-    
+
     p_el_dw.countO = p_el_dw.countO + 1;
     b_init.x = p_el_dw.xposO(p_el_dw.countO);
     b_init.y = p_el_dw.y ;
@@ -477,10 +465,10 @@ else % Create the figure
         'String','Initialize',...
         'BackgroundColor',buttonBGcolor,...
         'Callback','Eyelink.Initialize');
-    
+
     % ---------------------------------------------------------------------
     % Pushbutton : Eyelink IsConnected
-    
+
     p_el_dw.countO = p_el_dw.countO + 1;
     b_isco.x = p_el_dw.xposO(p_el_dw.countO);
     b_isco.y = p_el_dw.y ;
@@ -493,11 +481,11 @@ else % Create the figure
         'String','IsConnected',...
         'BackgroundColor',buttonBGcolor,...
         'Callback','Eyelink.IsConnected');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : Eyelink Calibration
-    
+
     p_el_dw.countO = p_el_dw.countO + 1;
     b_cal.x   = p_el_dw.xposO(p_el_dw.countO);
     b_cal.y   = p_el_dw.y ;
@@ -512,11 +500,11 @@ else % Create the figure
         'BackgroundColor',buttonBGcolor,...
         'Tag',b_cal.tag,...
         'Callback',@AMEDYST_main);
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : Eyelink force shutdown
-    
+
     b_fsd.x = c_pp.x + c_pp.h;
     b_fsd.y = p_el_up.y ;
     b_fsd.w = p_el_dw.Ow*1.25;
@@ -528,37 +516,37 @@ else % Create the figure
         'String','ForceShutDown',...
         'BackgroundColor',buttonBGcolor,...
         'Callback','Eyelink.ForceShutDown');
-    
-    
+
+
     %% Panel : Task : ADAPT
-    
+
     %     p_tk_adapt.x = p_tk_seq.x + p_tk_seq.w + p_tk_x_spacing;
     %     p_tk_adapt.w = p_tk_seq.w*2 ;
     p_tk_adapt.x = panelProp.xposP;
     p_tk_adapt.w = panelProp.wP;
-    
-    
+
+
     panelProp.countP = panelProp.countP - 1;
     p_tk_adapt.y = panelProp.yposP(panelProp.countP);
     p_tk_adapt.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
-    
+
     handles.uipanel_Task_ADAPT = uibuttongroup(handles.(mfilename),...
         'Title','ADAPT',...
         'Units', 'Normalized',...
         'Position',[p_tk_adapt.x p_tk_adapt.y p_tk_adapt.w p_tk_adapt.h],...
         'BackgroundColor',figureBGcolor);
-    
+
     p_tk_adapt.nbO    = 5; % Number of objects
     p_tk_adapt.Ow     = 1/(p_tk_adapt.nbO + 1); % Object width
     p_tk_adapt.countO = 0; % Object counter
     p_tk_adapt.xposO  = @(countO) p_tk_adapt.Ow/(p_tk_adapt.nbO+1)*countO + (countO-1)*p_tk_adapt.Ow;
-    
+
     p_tk_adapt.y_marge = 0.05;
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Edit : Deviation signe +/-
-    
+
     p_tk_adapt.countO = p_tk_adapt.countO + 1;
     e_deviation_sign.x = p_tk_adapt.xposO(p_tk_adapt.countO);
     e_deviation_sign.y = p_tk_adapt.y_marge;
@@ -572,10 +560,10 @@ else % Create the figure
         'String','',...
         'Callback',@edit_DeviationSign_Callback,...
         'Tooltip','can only be + or -');
-    
+
     % ---------------------------------------------------------------------
     % Edit : High Reward
-    
+
     p_tk_adapt.countO = p_tk_adapt.countO + 1;
     e_high_reward.x = p_tk_adapt.xposO(p_tk_adapt.countO);
     e_high_reward.y = p_tk_adapt.y_marge;
@@ -589,11 +577,11 @@ else % Create the figure
         'String',num2str(handles.defaultHighRreward),...
         'Callback',@edit_HighReward_Callback,...
         'Tooltip','High reward (€)');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Edit : Low Reward
-    
+
     e_low_reward.x = p_tk_adapt.xposO(p_tk_adapt.countO);
     e_low_reward.y = e_high_reward.h + e_high_reward.y + p_tk_adapt.y_marge;
     e_low_reward.w = p_tk_adapt.Ow;
@@ -606,11 +594,11 @@ else % Create the figure
         'String',num2str(handles.defaultLowRreward),...
         'Callback',@edit_LowReward_Callback,...
         'Tooltip','Low reward (€)');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : ADAPT_HighReward
-    
+
     p_tk_adapt.countO  = p_tk_adapt.countO + 1;
     b_adapt_high.x   = p_tk_adapt.xposO(p_tk_adapt.countO);
     b_adapt_high.y   = p_tk_adapt.y_marge;
@@ -626,11 +614,11 @@ else % Create the figure
         'Tag',b_adapt_high.tag,...
         'Callback',@AMEDYST_main,...
         'FontSize',8);
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : ADAPT_LowReward
-    
+
     b_adapt_low.x   = p_tk_adapt.xposO(p_tk_adapt.countO);
     b_adapt_low.y   = e_low_reward.y;
     b_adapt_low.w   = b_adapt_high.w;
@@ -645,11 +633,11 @@ else % Create the figure
         'Tag',b_adapt_low.tag,...
         'Callback',@AMEDYST_main,...
         'FontSize',8);
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : PLOT_ALL
-    
+
     p_tk_adapt.countO  = p_tk_adapt.countO + 2;
     b_PLOT_ALL.x   = p_tk_adapt.xposO(p_tk_adapt.countO);
     b_PLOT_ALL.y   = p_tk_adapt.y_marge;
@@ -667,16 +655,16 @@ else % Create the figure
         'ButtonDownFcn',@pushbutton_PLOT_ALL_GUIroutine,...
         'FontSize',8,...
         'Tooltip','Left click : plot last data  //  Right click : open UI to load specific data');
-    
-    
+
+
     %% Panel : Cursor input method
-    
+
     p_cursorinput.x = panelProp.xposP;
     p_cursorinput.w = panelProp.wP*2/3;
-    
+
     p_cursorinput.y = b_adapt_low.y + b_adapt_low.h + p_tk_adapt.y_marge;
     p_cursorinput.h = 1 - p_cursorinput.y - p_tk_adapt.y_marge;
-    
+
     handles.uipanel_CursorInput = uibuttongroup(handles.uipanel_Task_ADAPT,...
         'Title','Cursor input method',...
         'TitlePosition','righttop',...
@@ -684,17 +672,17 @@ else % Create the figure
         'Position',[p_cursorinput.x p_cursorinput.y p_cursorinput.w p_cursorinput.h],...
         'BackgroundColor',figureBGcolor,...
         'SelectionChangeFcn',@uipanel_CursorInput_SelectionChangeFcn);
-    
-    
+
+
     p_cursorinput.nbO    = 3; % Number of objects
     p_cursorinput.Ow     = 1/(p_cursorinput.nbO + 1); % Object width
     p_cursorinput.countO = 0; % Object counter
     p_cursorinput.xposO  = @(countO) p_cursorinput.Ow/(p_cursorinput.nbO+1)*countO + (countO-1)*p_cursorinput.Ow;
-    
-    
+
+
     % ---------------------------------------------------------------------
     % RadioButton : Joystick
-    
+
     p_cursorinput.countO = p_cursorinput.countO + 1;
     r_joystick.x   = p_cursorinput.xposO(p_cursorinput.countO);
     r_joystick.y   = 0.5;
@@ -711,11 +699,11 @@ else % Create the figure
         'BackgroundColor',figureBGcolor,...
         'ButtonDownFcn','joymex2_test',...
         'Tooltip','Right click will open a test');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Pushbutton : Joystick calibration
-    
+
     p_cursorinput.countO = p_cursorinput.countO + 1;
     p_joycal.x   = p_cursorinput.xposO(p_cursorinput.countO);
     p_joycal.y   = 0.5;
@@ -732,11 +720,11 @@ else % Create the figure
         'BackgroundColor',figureBGcolor,...
         'Callback',@joystick_calibration,...
         'Visible', 'off');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % RadioButton : Mouse
-    
+
     p_cursorinput.countO = p_cursorinput.countO + 1;
     r_mouse.x   = p_cursorinput.xposO(p_cursorinput.countO);
     r_mouse.y   = 0.5;
@@ -751,14 +739,14 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_mouse.tag,...
         'BackgroundColor',figureBGcolor);
-    
+
     % Uncheck the button : this is my way to force the user to select a method
     set(handles.uipanel_CursorInput,'SelectedObject','')
-    
-    
+
+
     % ---------------------------------------------------------------------
     % Checkbox : Display Feedback
-    
+
     c_fb.x = panelProp.wP*3/4;
     c_fb.y = p_cursorinput.y;
     c_fb.w = panelProp.wP*1/3;
@@ -772,11 +760,11 @@ else % Create the figure
         'BackgroundColor',figureBGcolor,...
         'Value',1,...
         'Tooltip','Show reward probability & result');
-    
-    
+
+
     % ---------------------------------------------------------------------
     % edit : xmin xmax ymin ymax
-    
+
     e_xymm.x = 0.1;
     e_xymm.w = 0.8;
     e_xymm.y = 0.1;
@@ -790,32 +778,32 @@ else % Create the figure
         'String','',...
         'Visible', 'off',...
         'Tooltip','Set with joystick calibration');
-    
-    
+
+
     %% Panel : Operation mode
-    
+
     p_op.x = panelProp.xposP;
     p_op.w = panelProp.wP;
-    
+
     panelProp.countP = panelProp.countP - 1;
     p_op.y = panelProp.yposP(panelProp.countP);
     p_op.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
-    
+
     handles.uipanel_OperationMode = uibuttongroup(handles.(mfilename),...
         'Title','Operation mode',...
         'Units', 'Normalized',...
         'Position',[p_op.x p_op.y p_op.w p_op.h],...
         'BackgroundColor',figureBGcolor);
-    
+
     p_op.nbO    = 3; % Number of objects
     p_op.Ow     = 1/(p_op.nbO + 1); % Object width
     p_op.countO = 0; % Object counter
     p_op.xposO  = @(countO) p_op.Ow/(p_op.nbO+1)*countO + (countO-1)*p_op.Ow;
-    
-    
+
+
     % ---------------------------------------------------------------------
     % RadioButton : Acquisition
-    
+
     p_op.countO = p_op.countO + 1;
     r_aq.x = p_op.xposO(p_op.countO);
     r_aq.y = 0.1 ;
@@ -831,11 +819,11 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_aq.tag,...
         'BackgroundColor',figureBGcolor);
-    
-    
+
+
     % ---------------------------------------------------------------------
     % RadioButton : FastDebug
-    
+
     p_op.countO = p_op.countO + 1;
     r_fd.x   = p_op.xposO(p_op.countO);
     r_fd.y   = 0.1 ;
@@ -851,11 +839,11 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_fd.tag,...
         'BackgroundColor',figureBGcolor);
-    
-    
+
+
     % ---------------------------------------------------------------------
     % RadioButton : RealisticDebug
-    
+
     p_op.countO = p_op.countO + 1;
     r_rd.x   = p_op.xposO(p_op.countO);
     r_rd.y   = 0.1 ;
@@ -871,25 +859,27 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_rd.tag,...
         'BackgroundColor',figureBGcolor);
-    
-    
+
+
+
+
     %% End of opening
-    
+
     % IMPORTANT
     guidata(figHandle,handles)
     % After creating the figure, dont forget the line
     % guidata(figHandle,handles) . It allows smart retrive like
     % handles=guidata(hObject)
-    
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if debug
         assignin('base','handles',handles) %#ok<UNRCH>
         disp(handles)
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+
     figPtr = figHandle;
-    
+
     fprintf('\n')
     fprintf('Response buttuns (fORRP 932) : \n')
     fprintf('\n')
@@ -903,21 +893,33 @@ else % Create the figure
     fprintf('TETHYX \n')
     fprintf('HID JOYSTICK \n')
     fprintf('\n')
-    
-    
+
+
+    %% KND: Pre-set options for faster testing by me...
+    if contains(which('AMEDYST_GUI'),'karim.ndiaye')
+        set(findall(0,'Tag','AMEDYST_GUI'),'Position', [ 20 60 600 600]);
+        set(handles.radiobutton_EyelinkOff,'Value',1)
+        uipanel_EyelinkMode_SelectionChangeFcn(...
+            handles.AMEDYST_GUI,struct('EventName','knd',...
+            'Source',handles.radiobutton_EyelinkOff,....
+            'NewValue',handles.radiobutton_EyelinkOff ))
+
+        set(handles.radiobutton_NoSave,'Value',1)
+
+        set(handles.radiobutton_Mouse,'Value',1)
+        set(handles.edit_SubjectID, 'String', '00')
+        set(handles.edit_DeviationSign, 'String', '+')
+        
+    end
+
 end
 
 if nargout > 0
-    
+
     varargout{1} = guidata(figPtr);
-    
+
 end
 
-%KND
-if debug
-    set(findall(0,'Tag','AMEDYST_GUI'),'Position', [ 20 60 600 600]);
-    set(radiobutton_EyelinkOff,'Value',1)
-end
 
 end % main function
 
@@ -970,7 +972,7 @@ end % function
 % end % function
 
 
-% -------------------------------------------------------------------------
+% -----------------------------------------²--------------------------------
 function uipanel_EyelinkMode_SelectionChangeFcn(hObject, eventdata)
 handles = guidata(hObject);
 
@@ -980,11 +982,18 @@ switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
         set(handles.pushbutton_IsConnected       ,'Visible','off')
         set(handles.pushbutton_ForceShutDown     ,'Visible','off')
         set(handles.pushbutton_Initialize        ,'Visible','off')
+        % KND: Added option for Arduino Port
+       set(handles.checkbox_ParPort,'Callback',@Common.Checkbox_ArduinoPort_Callback);
+       set(handles.checkbox_ParPort,'String','COM/Arduino Markers');
+
     case 'radiobutton_EyelinkOn'
         set(handles.pushbutton_EyelinkCalibration,'Visible','on')
         set(handles.pushbutton_IsConnected       ,'Visible','on')
         set(handles.pushbutton_ForceShutDown     ,'Visible','on')
         set(handles.pushbutton_Initialize        ,'Visible','on')
+        set(handles.checkbox_ParPort,'Callback',@GUI.Checkbox_ParPort_Callback);
+       set(handles.checkbox_ParPort,'String','Parallel Port Markers     ');
+
 end
 
 end % function
@@ -1014,7 +1023,7 @@ try
             set(handles.pushbutton_JoystickCalibration, 'Visible', 'off')
             set(handles.edit_xmin_ymin_xmax_ymax, 'Visible', 'off')
     end
-    
+
 catch err
     set(hObject,'SelectedObject',handles.radiobutton_Mouse);
     set(handles.pushbutton_JoystickCalibration, 'Visible', 'off')
@@ -1063,9 +1072,9 @@ input = get(hObject, 'String');
 
 switch input
     case '+'
-        
+
     case '-'
-        
+
     otherwise
         set(hObject,'String','')
         error('Deviation sign can only be + or -')
@@ -1080,30 +1089,30 @@ end % function
 function pushbutton_PLOT_ALL_GUIroutine(~, eventdata)
 
 switch eventdata.EventName
-    
+
     case 'Action'
-        
+
         global S %#ok<TLEV>
-        
+
         if isempty(S)
             warning('No stats to plot')
             return
         end
-        
+
         ADAPT.Stats.PLOT_ALL( S )
-        
+
     case 'ButtonDown'
-        
+
         % Get file
         [filename, pathname] = uigetfile(fullfile('..','data','*.mat'));
-        
+
         if isnumeric(filename)
             return
         end
-        
+
         % Load
         L = load(fullfile(pathname,filename));
-        
+
         % Plot loaded file
         ADAPT.Stats.PLOT_ALL( L.S )
 end
