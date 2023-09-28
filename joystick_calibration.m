@@ -1,5 +1,7 @@
-function joystick_calibration(hObject, eventData)
-handles = guidata(hObject);
+function xmin_ymin_xmax_ymax = joystick_calibration(hObject,~)
+if nargin>1
+    handles = guidata(hObject);
+end
 
 lim = 2^15; % joystick ADC is int16
 
@@ -96,10 +98,16 @@ end
 clear joymex2
 close(f)
 
+xmin_ymin_xmax_ymax = [min_x min_y max_x max_y];
+fprintf('[min_x min_y max_x max_y] = [%6d %6d %6d %6d]\n', xmin_ymin_xmax_ymax);
+
+if nargin==0
+    return
+end
 
 %% Save x y min max
 
-set(handles.edit_xmin_ymin_xmax_ymax,'String', num2str([min_x min_y max_x max_y]))
+set(handles.edit_xmin_ymin_xmax_ymax,'String', num2str(xmin_ymin_xmax_ymax))
 
 
 end
