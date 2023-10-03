@@ -3,7 +3,10 @@ global S prevX prevY newX newY
 
 try
     %% Tunning of the task
-    [ EP, Parameters ] = ADAPT.PlanningEdited;
+    % 
+    % [ EP, Parameters ] = ADAPT.PlanningEdited;
+    [ EP, Parameters ] = ADAPT.Planning;
+
 
     % End of preparations
     EP.BuildGraph;
@@ -139,9 +142,8 @@ try
 
                 stepJitterRunning  = 1;
                 counter_step_jitter = 0;
-
-                % KND
-                ThisTrialPausePremotor = 0.5+rand;
+                
+                ThisTrialPausePremotor = EP.Get('Premotor',evt);
 
                 while stepJitterRunning
 
@@ -207,9 +209,7 @@ try
                         step5onset = lastFlipOnset;
                         Common.SendParPortMessage( 'PausePreMotor' )
                     end
-    
-                  
-
+                     
                     if lastFlipOnset >= step5onset + ThisTrialPausePremotor
                         stepPauseBeforeMotor = 0;
                     end
@@ -484,14 +484,14 @@ try
                     note   = 0;
                     failedTrial = 1;
                 elseif too_late
-                    Probability.color =     S.Parameters.Text.Color    % S.Parameters.TextColor = [128 128 128]
+                    Probability.color =     S.Parameters.Text.Color;   % S.Parameters.TextColor = [128 128 128]
                     proba_str = sprintf( '\nToo late\n');
                     failedTrial  = 1 ;
                 else
                     if  EP.Get('Rew',evt) && S.Feedback
                         proba_str = sprintf( '\n%s%d\n' ,Parameters.Puni, note);%ER.Get('Rew',evt)) ); % looks like "33 %"
                     elseif ~ S.Feedback && EP.Get('Rew',evt)
-                        Probability.color =     S.Parameters.Text.Color    % S.Parameters.TextColor = [128 128 128]
+                        Probability.color =     S.Parameters.Text.Color;    % S.Parameters.TextColor = [128 128 128]
                         proba_str = sprintf( '_ | o' );
                     else
                         proba_str = sprintf( '' );
