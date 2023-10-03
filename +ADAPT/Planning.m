@@ -13,8 +13,7 @@ Parameters.MaxPauseBetweenTrials       = 0.1; % seconds
 
 % KND: For EEG adding jittered ITI premotor baseline
 Parameters.PausePreMotor_Min       = 3; % seconds
-Parameters.PausePreMotor_Min       = 4; % seconds
-
+Parameters.PausePreMotor_Max       = 4; % seconds
 
 Parameters.TravelMaxDuration           = 0.6; % seconds
 Parameters.TravelMinDuration           = 0.167; % seconds
@@ -145,7 +144,8 @@ for block = 1 : size(Paradigm,1)
     
     % For each block, counterbalance Targets-Values
     if block > 1 
-       EP.AddPlanning({'PauseTime',NextOnset(EP),Parameters.PauseBetweenBlocks,[],[],[],[],[],[]})
+       EP.AddPlanning([ {'PauseTime',NextOnset(EP),Parameters.PauseBetweenBlocks} , ...
+           repmat({[]},1,length(header)-3)]);
     end
     % Some values... per block
     %NrTrialsPerBlock  = Paradigm{block,3};
@@ -190,8 +190,8 @@ for block = 1 : size(Paradigm,1)
         % For eeg KND added premotor jitter
         PausePreMotorJitter = Parameters.PausePreMotor_Min + (Parameters.PausePreMotor_Max-Parameters.PausePreMotor_Min)*rand; % in seconds (s), random value beween [a;b] interval
 
-        % trialDuration = pauseJitter + Parameters.RewardNoteDuration        + Parameters.RewardNoteDuration        + Parameters.PausePreMotor + Parameters.TrialMaxDuration * 2 + Parameters.PausePostMotor + Parameters.ShowRewardDuration;
-        trialDuration =   pauseJitter + Parameters.RewardProbabilityDuration + Parameters.RewardProbabilityDuration + PausePreMotorJitter      + Parameters.TrialMaxDuration * 2 + Parameters.PausePostMotor + Parameters.ShowRewardDuration;
+        % trialDuration = pauseJitter + Parameters.RewardNoteDuration + Parameters.RewardNoteDuration + Parameters.PausePreMotor + Parameters.TrialMaxDuration * 2 + Parameters.PausePostMotor + Parameters.ShowRewardDuration;
+        trialDuration =   pauseJitter + Parameters.RewardNoteDuration + Parameters.RewardNoteDuration + PausePreMotorJitter      + Parameters.TrialMaxDuration * 2 + Parameters.PausePostMotor + Parameters.ShowRewardDuration;
 
         EP.AddPlanning({ ...
             Paradigm{block,1} NextOnset(EP) trialDuration block trial_counter Paradigm{block,2}  Parameters.TargetAngles(angleList(end)) ...

@@ -895,7 +895,6 @@ else % Create the figure
     fprintf('HID JOYSTICK \n')
     fprintf('\n')
 
-
     %% KND: Pre-set options for faster testing by me...
     if contains(which('AMEDYST_GUI'),'karim.ndiaye')
         set(findall(0,'Tag','AMEDYST_GUI'),'Position', [ 20 60 600 600]);
@@ -913,6 +912,11 @@ else % Create the figure
         
     end
 
+end
+
+
+if contains(which('AMEDYST_GUI'),'karim.ndiaye')
+    set(findall(0,'Tag','AMEDYST_GUI'),'Position', [-1600 400 600 600])
 end
 
 if nargout > 0

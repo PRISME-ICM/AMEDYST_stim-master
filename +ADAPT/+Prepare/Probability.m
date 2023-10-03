@@ -13,8 +13,8 @@ probability = Text(...
     Xptb    ,...
     Yptb    );
 
-probability.LinkToWindowPtr( S.PTB.wPtr )
+probability.LinkToWindowPtr( S.PTB.wPtr );
 
-probability.AssertReady % just to check
+probability.AssertReady; % just to check
 
 end % function

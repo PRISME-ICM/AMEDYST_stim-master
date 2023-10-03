@@ -395,6 +395,7 @@ try
 catch
     sca
     Screen('Preference','TextRenderer', 0);
+    warning('Failback to legacy\nOS Text Renderer')
     S.PTB = StartPTB;
     DrawFormattedText(S.PTB.wPtr,'Failback to legacy\nOS Text Renderer','center','center')
     Screen(S.PTB.wPtr,'flip')
@@ -478,7 +479,7 @@ elseif any(strcmp(Task,{'ADAPT_Reward','ADAPT_Punishment'}))
 
     end
     if S.Verbosity
-        fprintf('Total reward for this run : %g € \n', S.TaskData.Parameters.TotalReward);
+       % fprintf('Total reward for this run : %g € \n', S.TaskData.Parameters.TotalReward);
     end
 
 end

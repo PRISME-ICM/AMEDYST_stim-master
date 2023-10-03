@@ -1,14 +1,14 @@
 function [ ER, RR, KL, SR, OutRecorder, InRecorder ] = PrepareRecorders( EP )
 global S
 
-%% Prepare event record
+%% Prepare Event Recorder
 
 % Create
 switch S.Task
     case 'SEQ'
         ER = EventRecorder( { 'event_name' , 'onset(s)' , 'durations(s)' , 'sequence_results' } , size(EP.Data,1) );
     case {'ADAPT_Reward','ADAPT_Punishment'}
-        ER = EventRecorder( EP.Header                                                           , size(EP.Data,1) );
+        ER = EventRecorder( EP.Header , size(EP.Data,1) );
 end
 
 % Prepare
