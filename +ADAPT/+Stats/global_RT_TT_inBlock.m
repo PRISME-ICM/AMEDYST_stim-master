@@ -1,30 +1,15 @@
 function [ output ] = global_RT_TT_inBlock
+
 global S
-
 output = struct;
-
-
 %% Shortcut
-
 data = S.TaskData.OutRecorder.Data;
 Paradigm = S.TaskData.Parameters.Paradigm;
-
 
 %% Make stats for each block
 
 for block = 1 : size(Paradigm,1)
      name  = [Paradigm{block,1} '_' num2str(block)];
-    % Block name
-%     switch block
-%         case 1
-%             name = 'Direct__Pre';
-%         case 2
-%             name = 'Deviation';
-%         case 3
-%             name = 'Direct__Post';
-%         otherwise
-%             error('block ?')
-%     end % switch
     
     % Fetch data in the current block
     block_idx     = find(data(:,1)==block);
@@ -45,14 +30,11 @@ for block = 1 : size(Paradigm,1)
     
     output.(name)  = s;
     
-    fprintf('mean RT in block ''%s'' = %g ms \n', name, round(RTmean))
-    fprintf('std  RT in block ''%s'' = %g ms \n', name, round(RTstd ))
-    fprintf('mean TT in block ''%s'' = %g ms \n', name, round(TTmean))
-    fprintf('std  TT in block ''%s'' = %g ms \n', name, round(TTstd ))
+    fprintf('RT in block ''%s'': Mean = %g ms ; STD = %g\n', name, round(RTmean), round(RTstd));
+    fprintf('TT in block ''%s'': Mean = %g ms ; STD = %g\n', name, round(TTmean), round(TTstd));
     
 end % block
 
 output.content = mfilename;
-
 
 end % function
