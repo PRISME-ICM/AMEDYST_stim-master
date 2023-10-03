@@ -18,7 +18,8 @@ colors = lines(3);
 
 figure('Name','Evolution of RT TT AUC in blocks, chunk by chunk','NumberTitle','off')
 
-nAxes = 3;
+%KND:
+nAxes = size(Paradigm,1);
 ax = zeros(nAxes,1);
 
 for a = 1:nAxes
@@ -29,19 +30,8 @@ end
 chunk_offcet = 0;
 for block = 1 :size(Paradigm,1)
      name  = [Paradigm{block,1} '_' num2str(block)];
-    % Block name
-%     switch block
-%         case 1
-%             name = 'Direct__Pre';
-%         case 2
-%             name = 'Deviation';
-%         case 3
-%             name = 'Direct__Post';
-%         otherwise
-%             error('block ?')
-%     end % switch
-%     
-    if ~isfield(gloAU,name)
+
+     if ~isfield(gloAU,name)
         continue
     end
     

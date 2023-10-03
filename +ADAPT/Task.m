@@ -61,7 +61,7 @@ try
                 prevX = newX;
                 prevY = newY;
 
-                % BigCircle.Draw
+                % Fixation Cross Draw
                 Cross.Draw
                 Screen('DrawingFinished',S.PTB.wPtr);
                 Screen('Flip',S.PTB.wPtr);
@@ -80,8 +80,13 @@ try
                 Priority( 0 );
 
             case 'PauseTime' % break in the sequence 
-
-                disp('pause time')
+                if S.Verbosity
+                    disp('Pause time')
+                    DrawFormattedText(S.PTB.wPtr,'Starting pause...', 'center','center');
+                    Screen('DrawingFinished',S.PTB.wPtr);
+                    Screen('Flip',S.PTB.wPtr);
+                    WaitSecs(.2);
+                end
                 stepPauseTimes = 1 ;
                 counter_step_pause_notes  = 0;
                 if  EP.Get('Rew',evt - 1) && S.Feedback
@@ -89,7 +94,7 @@ try
                     sumNotes = sum(OutRecorder.Get('Points', ind));
                     proba_str = sprintf( '\n%s%d total points\n' ,Parameters.Puni, sumNotes);%ER.Get('Rew',evt)) ); % looks like "33 %"
                 elseif ~S.Feedback && EP.Get('Rew',evt - 1)
-                    Probability.color =     S.Parameters.Text.Color    % S.Parameters.TextColor = [128 128 128]
+                    Probability.color =     S.Parameters.Text.Color;   % S.Parameters.TextColor = [128 128 128]
                     proba_str = sprintf( 'End of this block' );
                 else
                     proba_str = sprintf( '' );
@@ -100,12 +105,14 @@ try
                     counter_step_pause_notes = counter_step_pause_notes + 1;
 
                     BigCircle.Draw
-
+                   
                     if lastFlipOnset <= step6onset + (Parameters.PauseBetweenBlocks/2 )
                         Probability.Draw( proba_str );
                     end
 
-
+                     if S.Verbosity                        
+                        DrawFormattedText(S.PTB.wPtr,'Pausing...','center');                        
+                    end
                     ADAPT.UpdateCursor(Cursor, EP.Get('Deviation',evt-1))
 
                     Screen('DrawingFinished',S.PTB.wPtr);
@@ -134,10 +141,10 @@ try
 
             case {'Direct_Pre', 'Deviation', 'No_vision'} % --------------------------------
 
-
                 % Echo in the command window
                 if S.Verbosity
-                    fprintf('#%3d deviation=%3° target=%3d° value=%3d%% Noreward=%d \n', round( cell2mat(EP.Data(evt,[5 6 7 9]))));
+                    % fprintf('#%3d deviation=%3° target=%3d° value=%3d%% Noreward=%d \n',round(cell2mat(EP.Data(evt,[5 6 7 9]))));
+                    fprintf('#%3d deviation=%3° target=%3d° value=%3d%% Noreward=%d \n',EP.Data{evt,5},EP.Data{evt,6},EP.Data{evt,7},EP.Data{evt,9});
                 end
 
                 %% ~~~ Jitter between trials ~~~
@@ -154,6 +161,10 @@ try
                     BigCircle.Draw;
                     Cross.Draw;
                     ADAPT.UpdateCursor(Cursor, EP.Get('Deviation',evt));
+
+                    if S.Verbosity
+                        DrawFormattedText(S.PTB.wPtr,'Pause...','center');
+                    end
 
                     Screen('DrawingFinished',S.PTB.wPtr);
                     lastFlipOnset = Screen('Flip',S.PTB.wPtr);
@@ -179,7 +190,7 @@ try
 
                     % Check if ESCAPE 
                     [ EXIT, StopTime ] = Common.Interrupt(ER,RR,StartTime);
-                    if EXIT
+                    if EXIT                      
                         break
                     end
 
@@ -412,13 +423,11 @@ try
                         Target.frameCurrentColor    = Red;
                         TravelTimeOUT = lastFlipOnset - flipOnset_step_Action - ReactionTimeOUT;
                         too_late  = 1;
-                        %RR.AddEvent({['Motor__TTOVER__' EP.Data{evt,1}] lastFlipOnset-StartTime [] EP.Data{evt,4} EP.Data{evt,5} EP.Data{evt,6} EP.Data{evt,7} EP.Data{evt,8} EP.Data{evt,9}})
                         RR.AddEvent([{['Motor__TTOVER__' EP.Data{evt,1}] lastFlipOnset-StartTime []} EP.Data(evt,4:end) ]);
                         Common.SendParPortMessage( 'Motor__TO' )
                         stepActionRunning = 0;
                         eAngle = 0;
                         note   = 0;
-                        disp('Null');
                     end
 
                     % Is cursor center in target ?
@@ -489,10 +498,10 @@ try
                 failedTrial = 0;
 
                 if TravelTimeOUT < Parameters.TravelMinDuration
-                    Probability.color =     S.Parameters.Text.Color    % S.Parameters.TextColor = [128 128 128]
+                    Probability.color =     S.Parameters.Text.Color;
                     proba_str = sprintf('\nToo fast\n');
                     if S.Verbosity
-                        fprintf('TravelTimeOUT: %g',TravelTimeOUT);
+                        fprintf('TravelTimeOUT: %g<%g',TravelTimeOUT,Parameters.TravelMinDuration);
                     end
                     Target.frameCurrentColor = Red;
 
@@ -636,8 +645,6 @@ try
     assignin('base','InRecorder' , InRecorder )
 
     TaskData.TargetBigCirclePosition = TargetBigCirclePosition;
-
-
 
 catch err
 

@@ -391,7 +391,7 @@ S.WindowedMode = WindowedMode;
 S.PTB = StartPTB;
 
 try
-    Screen('TextBounds',S.PTB.wPtr, '')
+    Screen('TextBounds',S.PTB.wPtr,' ')
 catch
     sca
     Screen('Preference','TextRenderer', 0);
@@ -404,7 +404,7 @@ end
 % KND
 if contains(which("AMEDYST_main"),'karim.ndiaye')
     S.Verbosity = 1;
-    fprintf('On Karim''s computers: we force verbose mode');
+    fprintf('On Karim''s computers we force verbose mode (S.Verbosity=1)');
 end
 
 

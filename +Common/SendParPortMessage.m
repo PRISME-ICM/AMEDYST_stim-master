@@ -14,8 +14,13 @@ elseif strcmp( S.ParPort , 'Arduino' )
     % Send Trigger
     IOPort( 'Write', S.h_arduinoport, uint8(S.ParPortMessages.(message)));
     WaitSecs( S.ParPortMessages.duration  );
-    IOPort( 'Write', h_arduinoport, uint8( 0 ) );
+    IOPort( 'Write', S.h_arduinoport, uint8( 0 ) );
 end
+
+if S.Verbosity
+    fprintf('Trigger: %s\n',message);
+end
+
 
 
 end % function

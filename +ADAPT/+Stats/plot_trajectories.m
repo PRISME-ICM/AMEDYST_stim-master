@@ -10,7 +10,9 @@ Paradigm = S.TaskData.Parameters.Paradigm;
 %% Plot
 
 figure('Name','Plot Y(X) in untilted referiential (like target=0°)', 'NumberTitle','off');
-nAxes = 3;
+% nAxes = 3;
+%KND:
+nAxes = size(Paradigm,1);
 ax = zeros(nAxes,1);
 
 for a = 1:nAxes
