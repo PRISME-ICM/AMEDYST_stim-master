@@ -45,11 +45,9 @@ TaskData.KL = KL;
 SR.ClearEmptySamples
 TaskData.SR = SR;
 
-
 % Save some values
 TaskData.StartTime = StartTime;
 TaskData.StopTime  = StopTime;
-
 
 %% Send infos to base workspace
 
@@ -61,7 +59,6 @@ assignin('base','SR',SR)
 
 assignin('base','TaskData',TaskData)
 
-
 %% Close all audio devices
 
 % Close the audio device
@@ -71,12 +68,11 @@ assignin('base','TaskData',TaskData)
 %% Close parallel port
 
 switch S.ParPort
-    
-    case 'On'
-        CloseParPort;
-        
+    case 'Parallel'
+        CloseParPort;    
+    case 'Arduino'
+        CloseCOMArduinoPort;    
     case 'Off'
-        
 end
 
 
