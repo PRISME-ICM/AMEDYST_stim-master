@@ -16,4 +16,4 @@ writetable(t,csvfile)
 
 % KND: extra infos
 % Trial Number
-trial  = SR.
+% trial  = SR.

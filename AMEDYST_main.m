@@ -30,19 +30,19 @@ S.Verbosity = 0;
 %% GUI : Task selection
 
 switch get(hObject,'Tag')
-    
+
     case 'pushbutton_SEQ'
         Task = 'SEQ';
-        
+
     case 'pushbutton_ADAPT_Reward'
         Task = 'ADAPT_Reward';
-        
+
     case 'pushbutton_ADAPT_Punishment'
         Task = 'ADAPT_Punishment';
-        
+
     case 'pushbutton_EyelinkCalibration'
         Task = 'EyelinkCalibration';
-        
+
     otherwise
         error('AMEDYST:TaskSelection','Error in Task selection')
 end
@@ -132,11 +132,11 @@ end
 DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
 
 if strcmp(SaveMode,'SaveData') && strcmp(OperationMode,'Acquisition')
-    
+
     if ~exist(DataPath, 'dir')
         mkdir(DataPath);
     end
-    
+
 end
 
 % DataFile_noRun = sprintf('%s%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Environement, Task );
@@ -174,19 +174,19 @@ switch DeviationSign
     case '-'
         sgn = 'Minus';
     otherwise
-            error('DeviationSign')
+        error('DeviationSign')
 end
 
 
 %% GUI : ADAPT : Show reward ?
 
 switch Task
-    
+
     case {'ADAPT_Reward','ADAPT_Punishment'}
-        
+
         Feedback = get( handles.checkbox_ATAPT_display_feedback , 'Value' );
         S.Feedback = Feedback;
-        
+
 end
 
 if S.Feedback
@@ -196,7 +196,7 @@ else
 end
 
 
-% Prepare 
+% Prepare
 
 tk = strrep(Task,'ADAPT_','')
 DataFile     = sprintf('%s%s_%s_%s_%s_%s_%s_run%0.2d', DataPath, S.TimeStampFile, SubjectID, Environement(1), tk,fdBack, sgn, RunNumber );
@@ -212,26 +212,26 @@ S.DataFileName  = DataFileName;
 %% MAIN : Controls for SubjectID depending on the Mode selected
 
 switch OperationMode
-    
+
     case 'Acquisition'
-        
+
         % Empty subject ID
         if isempty(SubjectID)
             error('AMEDYST:MissingSubjectID','\n For acquisition, SubjectID is required \n')
         end
-        
+
         % Acquisition => save data
         if ~get(handles.radiobutton_SaveData,'Value')
             warning('AMEDYST:DataShouldBeSaved','\n\n\n In acquisition mode, data should be saved \n\n\n')
         end
-        
+
 end
 
 
 %% GUI : Parallel port ?
 
 switch get( handles.checkbox_ParPort , 'Value' )
-    
+
     case 1
         if get( handles.radiobutton_EyelinkOff,'Value')
             ParPort = 'Arduino';
@@ -250,21 +250,21 @@ handles.ParPort   = ParPort;
 %% GUI : ADAPT : Show reward ?
 
 switch Task
-    
+
     case {'ADAPT_Reward','ADAPT_Punishment'}
-        
+
         Feedback = get( handles.checkbox_ATAPT_display_feedback , 'Value' );
         S.Feedback = Feedback;
-        
+
 end
 
 
 %% GUI : SEQ : visual feedback ?
 
 switch Task
-    
+
     case 'SEQ'
-        
+
         switch get(get(handles.uipanel_Feedback,'SelectedObject'),'Tag')
             case 'radiobutton_FeedbackOn'
                 Feedback = 'On';
@@ -274,7 +274,7 @@ switch Task
                 warning('AMEDYST:Feedback','Error in Feedback')
         end
         S.Feedback = Feedback;
-        
+
 end
 
 
@@ -302,29 +302,29 @@ S.xmin_ymin_xmax_ymax = xmin_ymin_xmax_ymax;
 %% GUI : Check if Eyelink toolbox is available
 
 switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
-    
+
     case 'radiobutton_EyelinkOff'
-        
+
         EyelinkMode = 'Off';
-        
+
     case 'radiobutton_EyelinkOn'
-        
+
         EyelinkMode = 'On';
-        
+
         % 'Eyelink.m' exists ?
         status = which('Eyelink.m');
         if isempty(status)
             error('AMEDYST:EyelinkToolbox','no ''Eyelink.m'' detected in the path')
         end
-        
+
         % Save mode ?
         if strcmp(S.SaveMode,'NoSave')
             error('AMEDYST:SaveModeForEyelink',' \n ---> Save mode should be turned on when using Eyelink <--- \n ')
         end
-        
+
         % Eyelink connected ?
         Eyelink.IsConnected
-        
+
         % File name for the eyelink : 8 char maximum
         switch Task
             case 'EyelinkCalibration'
@@ -336,17 +336,17 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
             otherwise
                 error('AMEDYST:Task','Task ?')
         end
-        
+
         EyelinkFile_noRun = [ 'AD_' SubjectID task ];
-        
+
         EyelinkFile = [EyelinkFile_noRun sprintf('%0.2d',RunNumber)];
-        
+
         S.EyelinkFile = EyelinkFile;
-        
+
     otherwise
-        
+
         warning('AMEDYST:EyelinkMode','Error in Eyelink mode')
-        
+
 end
 
 S.EyelinkMode = EyelinkMode;
@@ -355,11 +355,11 @@ S.EyelinkMode = EyelinkMode;
 % If erasing a file is needed, we need to do it manually
 
 if strcmp(SaveMode,'SaveData') && strcmp(OperationMode,'Acquisition')
-    
+
     if exist([DataFile '.mat'], 'file')
         error('MATLAB:FileAlreadyExists',' \n ---> \n The file %s.mat already exists .  <--- \n \n',DataFile);
     end
-    
+
 end
 
 
@@ -374,16 +374,13 @@ S.ScreenID = str2double( AvalableDisplays(SelectedDisplay) );
 
 
 %% GUI : Windowed screen ?
-
 switch get(handles.checkbox_WindowedScreen,'Value')
-    
     case 1
         WindowedMode = 'On';
     case 0
         WindowedMode = 'Off';
     otherwise
         warning('AMEDYST:WindowedScreen','Error in WindowedScreen')
-        
 end
 
 S.WindowedMode = WindowedMode;
@@ -394,9 +391,9 @@ S.WindowedMode = WindowedMode;
 S.PTB = StartPTB;
 
 try
-    Screen('TextBounds',S.PTB.wPtr, '')    
+    Screen('TextBounds',S.PTB.wPtr, '')
 catch
-    sca 
+    sca
     Screen('Preference','TextRenderer', 0);
     S.PTB = StartPTB;
     DrawFormattedText(S.PTB.wPtr,'Failback to legacy\nOS Text Renderer','center','center')
@@ -406,7 +403,7 @@ end
 % KND
 if contains(which("AMEDYST_main"),'karim.ndiaye')
     S.Verbosity = 1;
-    fprintf('On Karim''s computers: we force verbose mode');    
+    fprintf('On Karim''s computers: we force verbose mode');
 end
 
 
@@ -415,17 +412,17 @@ end
 EchoStart(Task)
 
 switch Task
-    
+
     case 'SEQ'
         TaskData = SEQ.Task;
-        
+
     case {'ADAPT_Reward','ADAPT_Punishment'}
         TaskData = ADAPT.Task;
-        
+
     case 'EyelinkCalibration'
         Eyelink.Calibration(S.PTB.wPtr);
         TaskData.ER.Data = {};
-        
+
     otherwise
         error('AMEDYST:Task','Task ?')
 end
@@ -442,68 +439,62 @@ save('DataOUT.mat','outD')
 csvfile=fullfile(S.DataPath,[S.DataFileName,'.csv']);
 trajectory_to_CSV(S.TaskData.SR,S.TaskData.EP,csvfile)
 
-
 %% MAIN : Save files on the fly : just a security in case of crash of the end the script
-
 save([fileparts(pwd) filesep 'data' filesep 'LastS'],'S');
 
 
 %% MAIN : Close PTB
-
 sca;
 Priority( 0 );
 
 
 %% MAIN : SPM data organization
-
 [ names , onsets , durations ] = SPMnod;
 
 
 %% MAIN : perform stats computation
 
 if strcmp(Task,'SEQ')
-    
+
     printResults(S.TaskData.ER)
-    
+
 elseif any(strcmp(Task,{'ADAPT_Reward','ADAPT_Punishment'}))
-    
+
     if ~isempty(S.TaskData.OutRecorder.Data)
-        
+
         S.Stats.evolution_RT_TT_inBlock            = ADAPT.Stats.evolution_RT_TT_inBlock;
         S.Stats.   global_RT_TT_inBlock            = ADAPT.Stats.   global_RT_TT_inBlock;
         S.Stats.evolution_AUC_inBlock              = ADAPT.Stats.evolution_AUC_inBlock;
         S.Stats.   global_AUC_inBlock              = ADAPT.Stats.   global_AUC_inBlock;
-%        S.Stats.evolution_RT_TT_AUC_inRewardChance = ADAPT.Stats.evolution_RT_TT_AUC_inRewardChance;
-%        S.Stats.evolution_RT_TT_AUC_inTarget       = ADAPT.Stats.evolution_RT_TT_AUC_inTarget;
-        
-        % Plot 
+
+        % Plot
         switch OperationMode
             case 'Acquisition'
             case 'FastDebug'
-%                ADAPT.Stats.PLOT_ALL( S )
+                ADAPT.Stats.PLOT_ALL( S )
             case 'RealisticDebug'
- %               ADAPT.Stats.PLOT_ALL( S )
+                % ADAPT.Stats.PLOT_ALL( S )
         end % switch
-        
+
     end
-    
-%    fprintf('UnitGain for this run     : %g € \n', S.TaskData.Parameters.UnitGain);
-%    fprintf('Total reward for this run : %g € \n', S.TaskData.Parameters.TotalReward);
-    
+    if S.Verbosity
+        fprintf('Total reward for this run : %g € \n', S.TaskData.Parameters.TotalReward);
+    end
+
 end
 
 
 %% MAIN : Saving data strucure
 
 if strcmp(SaveMode,'SaveData') && strcmp(OperationMode,'Acquisition')
-    
+
     if ~exist(DataPath, 'dir')
         mkdir(DataPath);
     end
-    
+
     save(DataFile,     'S', 'names', 'onsets', 'durations');
     save([DataFile '_SPM'], 'names', 'onsets', 'durations');
-    
+
 end
 
 
@@ -519,17 +510,12 @@ assignin('base', 'durations', durations);
 
 % Eyelink mode 'On' ?
 if strcmp(S.EyelinkMode,'On')
-    
     % Stop recording and retrieve the file
     Eyelink.StopRecording( S.EyelinkFile , S.DataPath )
-    
     if ~strcmp(S.Task,'EyelinkCalibration')
-        
         % Rename the file
         movefile([S.DataPath EyelinkFile '.edf'], [S.DataFile '.edf'])
-        
     end
-    
 end
 
 
