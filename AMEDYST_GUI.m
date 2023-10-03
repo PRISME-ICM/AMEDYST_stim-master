@@ -10,6 +10,7 @@ debug = 0;
 % KND: Force debug mode for me...
 if contains(which('AMEDYST_GUI'),'karim.ndiaye')
     debug = 1;
+    addpath 'C:\Users\karim.ndiaye\OneDrive - ICM\PRISME\Studies\Amedyst (BRACCO Martina)\code\StimTemplate-master'
 end
 
 %% Open a singleton figure, or gring the actual into focus.

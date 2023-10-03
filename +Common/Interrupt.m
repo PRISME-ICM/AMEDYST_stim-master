@@ -1,25 +1,28 @@
-function [ EXIT, StopTime ] = Interrupt( keyCode, ER, RR, StartTime )
+function [ EXIT, StopTime ] = Interrupt( ER, RR, StartTime )
 global S
 
-% % Escape ?
-% [ ~ , secs , keyCode ] = KbCheck;
-
-if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
+% Fetch keys
+[keyIsDown, ~, keyCode] = KbCheck;
+if keyIsDown && any(keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII))
     
     % Flag
     EXIT = 1;
     
     % Stop time
     StopTime = GetSecs;
-    
-    % Record StopTime
-    ER.AddStopTime( 'StopTime', StopTime - StartTime );
-    RR.AddStopTime( 'StopTime', StopTime - StartTime );
-    
+
+    if nargin>0
+        % Record StopTime
+        ER.AddStopTime( 'StopTime', StopTime - StartTime );
+        RR.AddStopTime( 'StopTime', StopTime - StartTime );
+    end
     ShowCursor;
     Priority( S.PTB.oldLevel );
     
-    fprintf( 'ESCAPE key pressed \n')
+    fprintf( 'ESCAPE key pressed \n');
+    if S.Verbosity
+        fprintf( 'StopTime: %g\n', StopTime);
+    end
     
 else
     
@@ -27,5 +30,3 @@ else
     StopTime  = [];
     
 end
-
-end % function

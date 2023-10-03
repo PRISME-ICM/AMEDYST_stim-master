@@ -2,19 +2,14 @@ function AMEDYST_main(hObject, ~)
 % AMEDYST_main is the main program, calling the different tasks and
 % routines, according to the paramterts defined in the GUI
 
-
 %% GUI : open a new one or retrive data from the current one
 
 if nargin == 0
-    
     AMEDYST_GUI;
-    
     return
-    
 end
 
 handles = guidata(hObject); % retrieve GUI data
-
 
 %% MAIN : Clean the environment
 
@@ -23,14 +18,14 @@ sca
 rng('default')
 rng('shuffle')
 
-
 %% MAIN : Initialize the main structure
 
 global S
 S               = struct; % S is the main structure, containing everything usefull, and used everywhere
-S.TimeStamp     = datestr(now, 'yyyy-mm-dd HH:MM'); % readable
+S.TimeStamp     = datestr(now, 'yyyy-mm-dd HH:MM'); % Human readable
 S.TimeStampFile = datestr(now, 30                ); % to sort automatically by time of creation
 
+S.Verbosity = 0;
 
 %% GUI : Task selection
 
@@ -90,8 +85,10 @@ switch get(get(handles.uipanel_OperationMode,'SelectedObject'),'Tag')
         OperationMode = 'Acquisition';
     case 'radiobutton_FastDebug'
         OperationMode = 'FastDebug';
+        S.Verbosity = 1;
     case 'radiobutton_RealisticDebug'
         OperationMode = 'RealisticDebug';
+        S.Verbosity = 1;
     otherwise
         warning('AMEDYST:ModeSelection','Error in Mode selection')
 end
@@ -406,6 +403,13 @@ catch
     Screen(S.PTB.wPtr,'flip')
 end
 
+% KND
+if contains(which("AMEDYST_main"),'karim.ndiaye')
+    S.Verbosity = 1;
+    fprintf('On Karim''s computers: we force verbose mode');    
+end
+
+
 %% MAIN : Task run
 
 EchoStart(Task)
@@ -416,7 +420,7 @@ switch Task
         TaskData = SEQ.Task;
         
     case {'ADAPT_Reward','ADAPT_Punishment'}
-        TaskData = ADAPT.Task_edited;
+        TaskData = ADAPT.Task;
         
     case 'EyelinkCalibration'
         Eyelink.Calibration(S.PTB.wPtr);

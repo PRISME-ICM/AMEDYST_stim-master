@@ -90,17 +90,6 @@ NrValues  = length(Parameters.Values);
 
 %% Define a planning <--- paradigme
 
-% KND 
-% EEG TImeline 
-% Jitter
-Parameters.MinPauseBetweenTrials       = 0.5; % seconds
-Parameters.MaxPauseBetweenTrials       = 1.5; % seconds
-
-% Parameters.PausePreMotor               = @()3+rand; % seconds
-Parameters.PausePreMotor_Min       = 3; % seconds
-Parameters.PausePreMotor_Min       = 4; % seconds
-
-
 % Move cursor
 Parameters.TrialMaxDuration            = 4.0; % seconds
 Parameters.TimeSpentOnTargetToValidate = 0.1; % seconds
@@ -111,9 +100,13 @@ Parameters.PausePostMotor              = 0.5; % seconds
 Parameters.ShowRewardDuration          = 1.0; % seconds
 
 
-
-
-
+% KND 
+% EEG TImeline 
+% Jitter
+Parameters.MinPauseBetweenTrials       = 0.5; % seconds
+Parameters.MaxPauseBetweenTrials       = 1.5; % seconds
+Parameters.PausePreMotor_Min       = 3; % seconds
+Parameters.PausePreMotor_Min       = 4; % seconds
 
 
 % Create and prepare
@@ -176,7 +169,7 @@ for block = 1 : size(Paradigm,1)
         
         value = LinkTargetValue( link_counter , angleList(end) ); % Fetch the Value associated with this TargetAngle
         
-        % For eeg KND
+        % For eeg KND, add premotor jitter
         PausePreMotorJitter = Parameters.PausePreMotor_Min + (Parameters.PausePreMotor_Max-Parameters.PausePreMotor_Min)*rand; % in seconds (s), random value beween [a;b] interval
 
         trialDuration = pauseJitter + Parameters.RewardProbabilityDuration + Parameters.RewardProbabilityDuration + PausePreMotorJitter + Parameters.TrialMaxDuration * 2 + Parameters.PausePostMotor + Parameters.ShowRewardDuration;
