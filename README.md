@@ -21,3 +21,6 @@ Optimized for Windows, but also works on Linux and Mac
 # Matlab/Octave
 MATLAB  : R2011a or superior  
 Octave  : GUI not available, Class definition (StimTemplate) is made for MATLAB but not for Octave  
+
+# Triggers
+Arduino Trigger box may e used
