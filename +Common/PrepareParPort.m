@@ -12,9 +12,9 @@ switch S.ParPort
         WriteParPort(0);
 
     case 'Arduino'
-        S.h_ArduinoPort = Common.OpenCOMArduinoPort();
+        h_ArduinoPort = Common.OpenCOMArduinoPort();
         disp('Trigger will be sent on COM/Arduino port.')
-        S.h_ArduinoPort
+        S.h_ArduinoPort= h_ArduinoPort;
 
 case 'Off'
     disp('No trigger will be sent.')

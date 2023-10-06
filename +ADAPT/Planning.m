@@ -2,7 +2,7 @@ function [ EP, Parameters ] = PlanningEdited
 global S
 
 % trials
-trials  = 2;
+trials  = 48;
 
 
 %% Paradigme
@@ -77,7 +77,7 @@ switch S.OperationMode
     case 'Acquisition'
         
         Paradigm = {
-            'Direct_Pre'  0        trials 0
+            'Direct_Pre'  0        4      0
             'Direct_Pre'  0        trials 0
             'No_vision'   0        trials 0
             'Deviation'   Sign*30  trials 1

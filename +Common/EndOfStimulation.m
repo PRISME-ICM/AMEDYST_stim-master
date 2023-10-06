@@ -71,7 +71,7 @@ switch S.ParPort
     case 'Parallel'
         CloseParPort;    
     case 'Arduino'
-        CloseCOMArduinoPort;    
+        Common.CloseCOMArduinoPort;    
     case 'Off'
 end
 

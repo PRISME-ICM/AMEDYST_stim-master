@@ -19,20 +19,28 @@ msg.Complexe    = 40;
 
 %% ADAPT
 
-msg.Jitter          = 1;
-msg.ShowProbability = 2;
-msg.PausePreMotor   = 3;
+msg.Jitter          = 1; %Jitter
+msg.PausePreMotor   = 2; %Fixation cross (previously 3)
 
-msg.Motor__Start    = 4;
-msg.Motor__RT       = 5;
-msg.Motor__TT       = 6;
+msg.GoBack__Start   = 3; %Check if the cursor is at the center (previously 7)
+msg.GoBack__TT      = 4; %Cursor in the center (previously 9)
 
-msg.GoBack__Start   = 7;
-msg.GoBack__RT      = 8;
-msg.GoBack__TT      = 9;
+msg.Motor__Start    = 5; %beginning of the trial, target appearance (previously 4)
+msg.Motor__RT       = 6; %Movement starts (previously 5)
+msg.Motor__TT       = 7; %target reached (previously 15)
+msg.Motor__TOut     = 8; %target not reached (previously 12)
 
-msg.PausePreReward  = 10;
-msg.ShowReward      = 11;
+msg.ShowNote        = 9; %Shows points (previously 13)
+msg.PausePreReward  = 10; %present but not useful?
+
+
+% msg.ShowProbability = 2;
+% msg.GoBack__RT      = 8;
+% msg.ShowReward      = 11;
+% 
+% msg.Motor__TOut     = 12;
+% msg.ShowSumNote     = 14;
+% msg.Motor__TO       = 16;
 
 
 %% Finalize
