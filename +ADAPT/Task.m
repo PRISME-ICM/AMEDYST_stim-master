@@ -433,6 +433,9 @@ try
                     % Is cursor center in target ?
                     if ADAPT.IsInside(Cursor,Target) && ~too_late 
                         Target.frameCurrentColor = Green;
+                        [x,y] = ADAPT.estimate_intersection(PrevCursor, Cursor, BigCircle);
+                        passed = 1;
+                        MarkingPoint.Move(x,y);
                         if ~has_already_traveled
                             TravelTimeOUT = lastFlipOnset - flipOnset_step_Action - ReactionTimeOUT;
                             has_already_traveled = 1;
