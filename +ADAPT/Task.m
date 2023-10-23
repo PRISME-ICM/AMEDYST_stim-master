@@ -502,7 +502,7 @@ try
 
                 if TravelTimeOUT < Parameters.TravelMinDuration
                     Probability.color =     S.Parameters.Text.Color;
-                    proba_str = sprintf('\nToo fast\n');
+                    proba_str = sprintf('\nTrop rapid\n');
                     if S.Verbosity
                         fprintf('TravelTimeOUT: %g<%g',TravelTimeOUT,Parameters.TravelMinDuration);
                     end
@@ -514,14 +514,16 @@ try
                     failedTrial = 1;
                 elseif too_late
                     Probability.color =     S.Parameters.Text.Color;   % S.Parameters.TextColor = [128 128 128]
-                    proba_str = sprintf( '\nToo late\n');
+                    proba_str = sprintf( '\nTrop lent\n');
                     failedTrial  = 1 ;
                 else
                     if  EP.Get('Rew',evt) && S.Feedback
                         proba_str = sprintf( '\n%s%d\n' ,Parameters.Puni, note);%ER.Get('Rew',evt)) ); % looks like "33 %"
                     elseif ~ S.Feedback && EP.Get('Rew',evt)
                         Probability.color =     S.Parameters.Text.Color;    % S.Parameters.TextColor = [128 128 128]
-                        proba_str = sprintf( '_ | o' );
+                        proba_st_options = [{'| o'} {'/ ^'} {'_ *'} {'! @'}];
+                        selected_proba = randi(length(proba_st_options));
+                        proba_str = sprintf(proba_st_options{selected_proba})
                     else
                         proba_str = sprintf( '' );
                     end
