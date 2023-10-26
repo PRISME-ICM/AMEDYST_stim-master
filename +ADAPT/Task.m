@@ -95,7 +95,7 @@ try
                     proba_str = sprintf( '\n%s%d total points\n' ,Parameters.Puni, sumNotes);%ER.Get('Rew',evt)) ); % looks like "33 %"
                 elseif ~S.Feedback && EP.Get('Rew',evt - 1)
                     Probability.color =     S.Parameters.Text.Color;   % S.Parameters.TextColor = [128 128 128]
-                    proba_str = sprintf( 'End of this block' );
+%                     proba_str = sprintf( 'End of this block' );
                 else
                     proba_str = sprintf( '' );
                 end
